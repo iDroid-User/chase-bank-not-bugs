@@ -3,7 +3,7 @@ import java.text.DecimalFormat;
 
 public class Main {
    // global variables
-   private static Boolean isBelow500 = false;
+   private static Boolean isBelow500 = false; // Tracks whether the balance has dropped below $500.00
    private static DecimalFormat fmt = new DecimalFormat("0.00");
    // define a CheckingAccount object to keep track of the account information
    private static CheckingAccount account;
