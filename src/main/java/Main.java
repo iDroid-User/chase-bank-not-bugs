@@ -4,7 +4,6 @@ import java.text.DecimalFormat;
 public class Main {
    // global variables
    private static Boolean isBelow500 = false; // Tracks whether the balance has dropped below $500.00
-   private static DecimalFormat fmt = new DecimalFormat("0.00");
    // define a CheckingAccount object to keep track of the account information
    private static CheckingAccount account;
 
@@ -38,10 +37,10 @@ public class Main {
          JOptionPane.showMessageDialog(null, message);
       } while (0 != transactionCode);
       // When loop ends show final balance to user.
-      message = "Transaction: End\nCurrent Balance: ($" + fmt.format(account.getBalance())
+      message = "Transaction: End\nCurrent Balance: ($" + formatAmount(account.getBalance())
             + ")\nTotal Service Charge: $"
-            + fmt.format(account.getServiceCharge()) + "\nFinal Balance: ($"
-            + fmt.format(account.getBalance() - account.getServiceCharge()) + ")";
+            + formatAmount(account.getServiceCharge()) + "\nFinal Balance: ($"
+            + formatAmount(account.getBalance() - account.getServiceCharge()) + ")";
       JOptionPane.showMessageDialog(null, message);
    }
 
@@ -54,8 +53,8 @@ public class Main {
    }
 
    public static String processCheck(double transAmt) {
-      String msg = "Transaction: Check in Amount of $" + fmt.format(transAmt) + "\nCurrent Balance: $"
-            + fmt.format(account.getBalance())
+      String msg = "Transaction: Check in Amount of $" + formatAmount(transAmt) + "\nCurrent Balance: $"
+            + formatAmount(account.getBalance())
             + "\nService Charge: Check --- charge $0.15";
       // Charges $5.00 the first time the balance drops below $500.00
       if (account.getBalance() < 500 && isBelow500 == false) {
@@ -72,20 +71,20 @@ public class Main {
          msg += "\nServiceCharge: Below $0 --- charge $10.00";
          account.setServiceCharge(10.00);
       }
-      msg += "\nTotal Service Charge: $" + fmt.format(account.getServiceCharge());
+      msg += "\nTotal Service Charge: $" + formatAmount(account.getServiceCharge());
       return msg;
    }
 
    public static String processDeposit(double transAmt) {
-      String msg = "Transaction: Deposit in Amount of $" + fmt.format(transAmt) + "\nCurrent Balance: $"
-            + fmt.format(account.getBalance())
+      String msg = "Transaction: Deposit in Amount of $" + formatAmount(transAmt) + "\nCurrent Balance: $"
+            + formatAmount(account.getBalance())
             + "\nService Charge: Deposit --- charge $0.10\nTotal Service Charge: $"
-            + fmt.format(account.getServiceCharge());
+            + formatAmount(account.getServiceCharge());
       account.setServiceCharge(0.10);
       return msg;
    }
 
-   public static String formatBalance(double amount) {
+   public static String formatAmount(double amount) {
       DecimalFormat fmtNegative = new DecimalFormat("($0.00)"); // For a negative balance
       DecimalFormat fmtPositive = new DecimalFormat("$0.00"); // For a positive balance
 
