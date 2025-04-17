@@ -35,7 +35,8 @@ public class Main {
          else
             message = "Invalid transaction code";
          JOptionPane.showMessageDialog(null, message);
-      } while (0 != transactionCode);
+      } while (transactionCode > 0);
+
       // When loop ends show final balance to user.
       message = "Transaction: End\nCurrent Balance: " + formatAmount(account.getBalance())
             + "\nTotal Service Charge: "
