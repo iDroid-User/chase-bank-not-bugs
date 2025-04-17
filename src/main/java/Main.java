@@ -1,4 +1,5 @@
 import javax.swing.JOptionPane;
+import javax.swing.JFrame;
 import java.text.DecimalFormat;
 
 public class Main {
@@ -6,6 +7,7 @@ public class Main {
    private static Boolean isBelow500 = false; // Tracks whether the balance has dropped below $500.00
    // define a CheckingAccount object to keep track of the account information
    private static CheckingAccount account;
+   public static JFrame frame;
 
    public static void main(String[] args) {
       // defines local variables
@@ -16,8 +18,16 @@ public class Main {
       initialBalance = Double.parseDouble(JOptionPane.showInputDialog("Enter your initial balance: "));
       // open an account with the initial balance
       account = new CheckingAccount(initialBalance);
+
+      frame = new JFrame("Choose action:");
+      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Ends the program rather than a transaction code of 0
+      EOptionsPanel panel = new EOptionsPanel();
+      frame.getContentPane().add(panel);
+      frame.pack();
+
       // perform in a loop until the transaction code == 0
       do {
+         frame.setVisible(true); // Displays the JFrame
          // get the transaction code from the user
          transactionCode = getTransCode();
          // break the loop if the transaction code is 0
