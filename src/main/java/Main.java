@@ -56,12 +56,16 @@ public class Main {
       JOptionPane.showMessageDialog(null, message);
    }
 
-   public static int getTransCode() {
-      return Integer.parseInt(JOptionPane.showInputDialog("Enter your transaction code: "));
+   // Get the transaction code from the user
+   public static void getTransCode() {
+      frame.setVisible(false); // Hides the JFrame
+      transactionCode = Integer.parseInt(JOptionPane.showInputDialog("Enter your transaction code: "));
    }
 
-   public static double getTransAmt() {
-      return Double.parseDouble(JOptionPane.showInputDialog("Enter your transaction amount: "));
+   // and process it with the appropriate helper method
+   public static void getTransAmt() {
+      transactionAmount = Double.parseDouble(JOptionPane.showInputDialog("Enter your transaction amount: "));
+      frame.setVisible(true);
    }
 
    public static String processCheck(double transAmt) {
