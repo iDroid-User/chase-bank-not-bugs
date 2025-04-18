@@ -5,15 +5,16 @@ import java.text.DecimalFormat;
 public class Main {
    // global variables
    private static Boolean isBelow500 = false; // Tracks whether the balance has dropped below $500.00
+   private static int transactionCode;
+   private static double transactionAmount;
    // define a CheckingAccount object to keep track of the account information
    private static CheckingAccount account;
    public static JFrame frame;
 
    public static void main(String[] args) {
       // defines local variables
-      int transactionCode;
       String message;
-      double initialBalance, transactionAmount;
+      double initialBalance;
       // get initial balance from the user
       initialBalance = Double.parseDouble(JOptionPane.showInputDialog("Enter your initial balance: "));
       // open an account with the initial balance
