@@ -12,9 +12,7 @@ public class CheckingAccount {
       totalServiceCharge = 0.0;
    }
 
-   public double getBalance() {
-      return balance;
-   }
+   public double getBalance() { return balance; }
 
    public void setBalance(double transAmt, int tCode) {
       if (1 == tCode) {
