@@ -49,8 +49,7 @@ public class EOptionsPanel extends JPanel {
          Object source = event.getSource();
 
          if (source == one) {
-            Main.getTransCode();
-            Main.getTransAmt();
+            Main.getTransInfo();
          } else if (source == two) {
             // Make a helper method that lists all Transactions
          }

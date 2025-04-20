@@ -6,13 +6,12 @@ public class Main {
    // global variables
    private static Boolean isBelow500 = false; // Tracks whether the balance has dropped below $500.00
    private static int transactionCode;
-   private static double transactionAmount;
-   // define a CheckingAccount object to keep track of the account information
+    // define a CheckingAccount object to keep track of the account information
    private static CheckingAccount account;
    public static JFrame frame;
 
    public static void main(String[] args) {
-      // defines local variables
+      // define local variables
       String message;
       double initialBalance;
       // get initial balance from the user
@@ -26,29 +25,18 @@ public class Main {
       frame.getContentPane().add(panel);
       frame.pack();
 
-      // perform in a loop until the transaction code == 0
+      // perform in a loop until transactionCode == 0
       do {
          frame.setVisible(true); // Displays the JFrame
-         // get the transaction code from the user
-         transactionCode = getTransCode();
-         // break the loop if the transaction code is 0
          if (0 == transactionCode)
             break;
          // and process it with appropriate helper method
          transactionAmount = getTransAmt();
          account.setBalance(transactionAmount, transactionCode); // Make a transaction
 
-         // process the transaction
-         if (1 == transactionCode)
-            message = processCheck(transactionAmount);
-         else if (2 == transactionCode)
-            message = processDeposit(transactionAmount);
-         else
-            message = "Invalid transaction code";
-         JOptionPane.showMessageDialog(null, message);
-      } while (transactionCode > 0);
+      } while (transactionCode != 0);
 
-      // When loop ends show final balance to user.
+      // When loop ends show final balance to user
       message = "Transaction: End\nCurrent Balance: " + formatAmount(account.getBalance())
             + "\nTotal Service Charge: "
             + formatAmount(account.getServiceCharge()) + "\nFinal Balance: "
@@ -56,15 +44,23 @@ public class Main {
       JOptionPane.showMessageDialog(null, message);
    }
 
-   // Get the transaction code from the user
-   public static void getTransCode() {
-      frame.setVisible(false); // Hides the JFrame
-      transactionCode = Integer.parseInt(JOptionPane.showInputDialog("Enter your transaction code: "));
-   }
+   // Get the transaction code from the user and process it with the appropriate helper method
+   public static void getTransInfo() {
+       frame.setVisible(false); // Hides the JFrame
 
-   // and process it with the appropriate helper method
-   public static void getTransAmt() {
-      transactionAmount = Double.parseDouble(JOptionPane.showInputDialog("Enter your transaction amount: "));
+      int transactionCode = Integer.parseInt(JOptionPane.showInputDialog("Enter your transaction code: "));
+      double transactionAmount = Double.parseDouble(JOptionPane.showInputDialog("Enter your transaction amount: "));
+      account.setBalance(transactionAmount, transactionCode); // Make a transaction
+
+      // process the transaction
+       String message;
+       if (1 == transactionCode)
+         message = processCheck(transactionAmount);
+      else if (2 == transactionCode)
+         message = processDeposit(transactionAmount);
+      else
+         message = "Invalid transaction code";
+      JOptionPane.showMessageDialog(null, message);
       frame.setVisible(true);
    }
 
