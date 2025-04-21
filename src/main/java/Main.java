@@ -32,24 +32,48 @@ public class Main {
 
       int transactionCode = Integer.parseInt(JOptionPane.showInputDialog("Enter your transaction code:"));
       double transactionAmount = Double.parseDouble(JOptionPane.showInputDialog("Enter your transaction amount:"));
-      account.setBalance(transactionAmount, transactionCode); // Make a transaction
+      Transaction transaction = new Transaction(account.getTransCount(), transactionCode, transactionAmount);
+      account.setBalance(transactionAmount, transactionCode);
+      account.addTrans(transaction);
 
       // process the transaction
        String message;
-       if (1 == transactionCode)
-         message = processCheck(transactionAmount);
-      else if (2 == transactionCode)
-         message = processDeposit(transactionAmount);
-      else if (0 == transactionCode) {
+       if (1 == transactionCode) {
+           message = processCheck(transactionAmount);
+       } else if (2 == transactionCode) {
+           message = processDeposit(transactionAmount);
+       } else if (0 == transactionCode) {
           message = "Transaction: End\nCurrent Balance: " + formatAmount(account.getBalance())
                   + "\nTotal Service Charge: "
                   + formatAmount(account.getServiceCharge()) + "\nFinal Balance: "
                   + formatAmount(account.getBalance() - account.getServiceCharge());
           JOptionPane.showMessageDialog(null, message);
        }
-      else
-         message = "Invalid transaction code";
+      else {
+           message = "Invalid transaction code";
+       }
       JOptionPane.showMessageDialog(null, message);
+      frame.setVisible(true);
+   }
+
+   public static void getTransactionInfo() {
+      frame.setVisible(false);
+
+      String message, transType = "";
+      message = "List All Transactions" + "\n\nID\tType\t\t\t\t\tAmount";
+      for (int index = 0; index < account.getTransCount(); index++) {
+         if (account.getTrans(index).getTransId() == 1) {
+            transType = "Check";
+         } else if (account.getTrans(index).getTransId() == 2) {
+            transType = "Deposit";
+         } else if (account.getTrans(index).getTransId() == 3) {
+            transType = "Svc. Chg.";
+         }
+         message += "\n" + account.getTrans(index).getTransNumber() + "\t" + transType + "\t\t" +
+                 formatAmount(account.getTrans(index).getTransAmount());
+      }
+      JOptionPane.showMessageDialog(null, message);
+
       frame.setVisible(true);
    }
 
@@ -57,11 +81,16 @@ public class Main {
       String msg = "Transaction: Check in Amount of " + formatAmount(transAmt) + "\nCurrent Balance: "
             + formatAmount(account.getBalance())
             + "\nService Charge: Check --- charge $0.15";
+      Transaction serviceCharge = new Transaction(account.getTransCount(), 3, 0.15);
+      account.addTrans(serviceCharge);
+
       // Charges $5.00 the first time the balance drops below $500.00
       if (account.getBalance() < 500 && !isBelow500) {
          isBelow500 = true;
          msg += "\nServiceCharge: Below $500 --- charge $5.00";
          account.setServiceCharge(5.00);
+         serviceCharge = new Transaction(account.getTransCount(), 3, 5.00);
+         account.addTrans(serviceCharge);
       }
       // Issues a warning when the balance drops below $50.00
       if (account.getBalance() < 50) {
@@ -71,6 +100,8 @@ public class Main {
       if (account.getBalance() < 0) {
          msg += "\nServiceCharge: Below $0 --- charge $10.00";
          account.setServiceCharge(10.00);
+         serviceCharge = new Transaction(account.getTransCount(), 3, 10.00);
+         account.addTrans(serviceCharge);
       }
       msg += "\nTotal Service Charge: " + formatAmount(account.getServiceCharge());
       return msg;
@@ -81,7 +112,8 @@ public class Main {
             + formatAmount(account.getBalance())
             + "\nService Charge: Deposit --- charge $0.10\nTotal Service Charge: "
             + formatAmount(account.getServiceCharge());
-      account.setServiceCharge(0.10);
+      Transaction serviceCharge = new Transaction(account.getTransCount(), 3, 0.10);
+      account.addTrans(serviceCharge);
       return msg;
    }
 

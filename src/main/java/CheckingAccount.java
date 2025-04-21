@@ -5,11 +5,13 @@ public class CheckingAccount {
    private double totalServiceCharge;
    // New data and methods for the CheckingAccount class
    private ArrayList<Transaction> transList; // Keeps a list of Transactions for the account
-   private int transCount; // The count of Transactions; also used as the ID for each Transaction
+   private int transCount; // The Transaction count
 
    public CheckingAccount(double initialBalance) {
       balance = initialBalance;
       totalServiceCharge = 0.0;
+      transList = new ArrayList<>();
+      transCount = 0;
    }
 
    public double getBalance() { return balance; }
@@ -32,13 +34,12 @@ public class CheckingAccount {
    }
 
    // Charges fees depending on balance amount
-   public void setServiceCharge(double currentServiceCharge) {
-      totalServiceCharge += currentServiceCharge;
-   }
+   public void setServiceCharge(double currentServiceCharge) { totalServiceCharge += currentServiceCharge; }
 
    // Adds a Transaction to the transList
    public void addTrans(Transaction newTrans) {
       transList.add(newTrans);
+      transCount++;
    }
 
    // Returns the current value of transCount

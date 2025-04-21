@@ -12,11 +12,7 @@ public class Transaction {
       return transNumber;
    }
 
-   public int getTransId() {
-      return transId;
-   }
+   public int getTransId() { return transId; }
 
-public double getTransAmount() {
-      return transAmt;
-   }
+   public double getTransAmount() { return transAmt; }
 }
