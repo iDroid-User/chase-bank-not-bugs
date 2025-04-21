@@ -53,9 +53,9 @@ public class EOptionsPanel extends JPanel {
          } else if (source == two) {
             Main.getTransactionInfo();
          } else if (source == three) {
-            // Make a helper method that lists all checks
+            Main.getChecks();
          } else if (source == four) {
-            // Make a helper method that lists all deposits
+            Main.getDeposits();
          }
       }
    }

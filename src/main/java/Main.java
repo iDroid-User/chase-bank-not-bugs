@@ -30,28 +30,28 @@ public class Main {
    public static void setTransactionInfo() {
        frame.setVisible(false); // Hides the JFrame
 
+      String message;
       int transactionCode = Integer.parseInt(JOptionPane.showInputDialog("Enter your transaction code:"));
-      double transactionAmount = Double.parseDouble(JOptionPane.showInputDialog("Enter your transaction amount:"));
-      Transaction transaction = new Transaction(account.getTransCount(), transactionCode, transactionAmount);
-      account.setBalance(transactionAmount, transactionCode);
-      account.addTrans(transaction);
+      if (0 == transactionCode) {
+         message = "Transaction: End\nCurrent Balance: " + formatAmount(account.getBalance())
+                 + "\nTotal Service Charge: "
+                 + formatAmount(account.getServiceCharge()) + "\nFinal Balance: "
+                 + formatAmount(account.getBalance() - account.getServiceCharge());
+      } else if (1 == transactionCode || 2 == transactionCode) {
+         double transactionAmount = Double.parseDouble(JOptionPane.showInputDialog("Enter your transaction amount:"));
+         Transaction transaction = new Transaction(account.getTransCount(), transactionCode, transactionAmount);
+         account.setBalance(transactionAmount, transactionCode);
+         account.addTrans(transaction);
 
-      // process the transaction
-       String message;
-       if (1 == transactionCode) {
-           message = processCheck(transactionAmount);
-       } else if (2 == transactionCode) {
-           message = processDeposit(transactionAmount);
-       } else if (0 == transactionCode) {
-          message = "Transaction: End\nCurrent Balance: " + formatAmount(account.getBalance())
-                  + "\nTotal Service Charge: "
-                  + formatAmount(account.getServiceCharge()) + "\nFinal Balance: "
-                  + formatAmount(account.getBalance() - account.getServiceCharge());
-          JOptionPane.showMessageDialog(null, message);
-       }
-      else {
-           message = "Invalid transaction code";
-       }
+         // process the transaction
+         if (1 == transactionCode) {
+            message = processCheck(transactionAmount);
+         } else {
+            message = processDeposit(transactionAmount);
+         }
+      } else {
+         message = "Invalid transaction code";
+      }
       JOptionPane.showMessageDialog(null, message);
       frame.setVisible(true);
    }
@@ -59,18 +59,52 @@ public class Main {
    public static void getTransactionInfo() {
       frame.setVisible(false);
 
-      String message, transType = "";
-      message = "List All Transactions" + "\n\nID\tType\t\t\t\t\tAmount";
+      String message, transType;
+      message = "List All Transactions" + "\n\nID\t\tType\t\tAmount";
       for (int index = 0; index < account.getTransCount(); index++) {
          if (account.getTrans(index).getTransId() == 1) {
-            transType = "Check";
+            transType = "Check\t\t\t";
          } else if (account.getTrans(index).getTransId() == 2) {
-            transType = "Deposit";
+            transType = "Deposit\t\t";
          } else if (account.getTrans(index).getTransId() == 3) {
-            transType = "Svc. Chg.";
+            transType = "Svc. Chg.\t";
+         } else {
+            transType = "";
          }
-         message += "\n" + account.getTrans(index).getTransNumber() + "\t" + transType + "\t\t" +
+         message += "\n" + account.getTrans(index).getTransNumber() + "\t\t" + transType +
                  formatAmount(account.getTrans(index).getTransAmount());
+      }
+      JOptionPane.showMessageDialog(null, message);
+
+      frame.setVisible(true);
+   }
+
+   public static void getChecks() {
+      frame.setVisible(false);
+
+      String message;
+      message = "List All Checks" + "\n\nID\tAmount";
+      for (int index = 0; index < account.getTransCount(); index++) {
+         if (account.getTrans(index).getTransId() == 1) {
+            message += "\n" + account.getTrans(index).getTransNumber() + "\t" +
+                    formatAmount(account.getTrans(index).getTransAmount());
+         }
+      }
+      JOptionPane.showMessageDialog(null, message);
+
+      frame.setVisible(true);
+   }
+
+   public static void getDeposits() {
+      frame.setVisible(false);
+
+      String message;
+      message = "List All Deposits" + "\n\nID\tAmount";
+      for (int index = 0; index < account.getTransCount(); index++) {
+         if (account.getTrans(index).getTransId() == 2) {
+            message += "\n" + account.getTrans(index).getTransNumber() + "\t" +
+                    formatAmount(account.getTrans(index).getTransAmount());
+         }
       }
       JOptionPane.showMessageDialog(null, message);
 
