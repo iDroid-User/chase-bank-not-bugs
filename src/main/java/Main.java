@@ -11,12 +11,15 @@ public class Main {
 
    public static void main(String[] args) {
       // define local variables
-      String message;
+      String message, accountHolder;
       double initialBalance;
+
+      // get the name of the person who owns the account
+      accountHolder = (JOptionPane.showInputDialog("Enter the account name:"));
       // get initial balance from the user
       initialBalance = Double.parseDouble(JOptionPane.showInputDialog("Enter your initial balance:"));
       // open an account with the initial balance
-      account = new CheckingAccount(initialBalance);
+      account = new CheckingAccount(accountHolder, initialBalance);
 
       frame = new JFrame("Choose action:");
       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Ends the program rather than a transaction code of 0

@@ -1,13 +1,14 @@
 import java.util.ArrayList;
 
-public class CheckingAccount {
+public class CheckingAccount extends Account {
    private double balance;
    private double totalServiceCharge;
    // New data and methods for the CheckingAccount class
    private ArrayList<Transaction> transList; // Keeps a list of Transactions for the account
    private int transCount; // The Transaction count
 
-   public CheckingAccount(double initialBalance) {
+   public CheckingAccount(String name, double initialBalance) {
+      super(name, initialBalance);
       balance = initialBalance;
       totalServiceCharge = 0.0;
       transList = new ArrayList<>();
