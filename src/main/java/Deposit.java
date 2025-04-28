@@ -1,12 +1,12 @@
 public class Deposit extends Transaction{
-    int depositNumber;
-    // private double cashAmt, checkAmt; // May not be necessary, just arrays to track them
+    private final double cashAmt, checkAmt;
 
-    public Deposit(int tId, double tAmt, int tCount, int depositNumber) {
+    public Deposit(int tId, double tAmt, int tCount, double cashAmt, double checkAmt) {
         super(tCount, tId, tAmt);
-        this.depositNumber = depositNumber;
+        this.cashAmt = cashAmt;
+        this.checkAmt = checkAmt;
     }
 
-    public int getDepositNumber() { return depositNumber; }
-    public void setDepositNumber(int depositNumber) { this.depositNumber = depositNumber; }
+    public double getCashAmt() { return cashAmt; }
+    public double getCheckAmt() { return checkAmt; }
 }

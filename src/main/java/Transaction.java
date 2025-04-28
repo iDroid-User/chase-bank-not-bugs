@@ -1,10 +1,10 @@
 public class Transaction {
-   private int transNumber, transId;
-   private double transAmt;
+   protected int transNumber, transId;
+   protected double transAmt;
 
    public Transaction(int number, int id, double amount) {
-      transNumber = number;
-      transId = id;
+      transNumber = number; // Transaction number
+      transId = id; // Transaction code
       transAmt = amount;
    }
 

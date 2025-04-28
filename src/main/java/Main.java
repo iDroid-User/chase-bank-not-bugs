@@ -34,27 +34,31 @@ public class Main {
        frame.setVisible(false); // Hides the JFrame
 
       String message;
+      double transactionAmount;
       int transactionCode = Integer.parseInt(JOptionPane.showInputDialog("Enter your transaction code:"));
       if (0 == transactionCode) {
          message = "Transaction: End\nCurrent Balance: " + formatAmount(account.getBalance())
                  + "\nTotal Service Charge: "
                  + formatAmount(account.getServiceCharge()) + "\nFinal Balance: "
                  + formatAmount(account.getBalance() - account.getServiceCharge());
-      } else if (1 == transactionCode || 2 == transactionCode) {
-         double transactionAmount = Double.parseDouble(JOptionPane.showInputDialog("Enter your transaction amount:"));
-         Transaction transaction = new Transaction(account.getTransCount(), transactionCode, transactionAmount);
+      } else if (1 == transactionCode) {
+         int checkNumber = Integer.parseInt(JOptionPane.showInputDialog("Enter your check number:"));
+         transactionAmount = Double.parseDouble(JOptionPane.showInputDialog("Enter your check amount:"));
+         Check check = new Check(transactionCode, transactionAmount, account.getTransCount(), checkNumber);
          account.setBalance(transactionAmount, transactionCode);
-         account.addTrans(transaction);
-
-         // process the transaction
-         if (1 == transactionCode) {
-            message = processCheck(transactionAmount);
-         } else {
-            message = processDeposit(transactionAmount);
-         }
-      } else {
-         message = "Invalid transaction code";
-      }
+         account.addTrans(check);
+         message = processCheck(transactionAmount, checkNumber);
+      } else if (2 == transactionCode) {
+         // Merge these dialog boxes somehow
+         double cashAmount = Double.parseDouble(JOptionPane.showInputDialog("Cash"));
+         double checkAmount = Double.parseDouble(JOptionPane.showInputDialog("Check"));
+         transactionAmount = cashAmount + checkAmount;
+         Deposit deposit = new Deposit(transactionCode, transactionAmount, account.getTransCount(), cashAmount,
+                 checkAmount);
+         account.setBalance(transactionAmount, transactionCode);
+         account.addTrans(deposit);
+         message = processDeposit(transactionAmount);
+      } else { message = "Invalid transaction code"; }
       JOptionPane.showMessageDialog(null, message);
       frame.setVisible(true);
    }
@@ -114,10 +118,10 @@ public class Main {
       frame.setVisible(true);
    }
 
-   public static String processCheck(double transAmt) {
-      String msg = "Transaction: Check in Amount of " + formatAmount(transAmt) + "\nCurrent Balance: "
-            + formatAmount(account.getBalance())
-            + "\nService Charge: Check --- charge $0.15";
+   public static String processCheck(double transAmt, int checkNumber) {
+      String msg = account.getName() + "'s Account\nTransaction: Check #" + checkNumber + " in Amount of "
+              + formatAmount(transAmt) + "\nCurrent Balance: " + formatAmount(account.getBalance())
+              + "\nService Charge: Check --- charge $0.15";
       Transaction serviceCharge = new Transaction(account.getTransCount(), 3, 0.15);
       account.addTrans(serviceCharge);
 
@@ -145,8 +149,8 @@ public class Main {
    }
 
    public static String processDeposit(double transAmt) {
-      String msg = "Transaction: Deposit in Amount of " + formatAmount(transAmt) + "\nCurrent Balance: "
-            + formatAmount(account.getBalance())
+      String msg = account.getName() + "'s Account\nTransaction: Deposit in Amount of " + formatAmount(transAmt)
+            + "\nCurrent Balance: " + formatAmount(account.getBalance())
             + "\nService Charge: Deposit --- charge $0.10\nTotal Service Charge: "
             + formatAmount(account.getServiceCharge());
       Transaction serviceCharge = new Transaction(account.getTransCount(), 3, 0.10);

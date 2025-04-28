@@ -44,7 +44,7 @@ public class EOptionsPanel extends JPanel {
 
    // The listener class for the radio buttons
    private class EOptionListener implements ActionListener {
-      // Calls the method to process the radio button that  was pressed
+      // Calls the method to process the radio button that was pressed
       public void actionPerformed(ActionEvent event) {
          Object source = event.getSource();
 
