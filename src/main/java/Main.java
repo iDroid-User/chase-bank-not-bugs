@@ -11,7 +11,7 @@ public class Main {
 
    public static void main(String[] args) {
       // define local variables
-      String message, accountHolder;
+      String accountHolder;
       double initialBalance;
 
       // get the name of the person who owns the account
