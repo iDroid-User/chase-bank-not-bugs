@@ -1,5 +1,5 @@
-import javax.swing.JOptionPane;
-import javax.swing.JFrame;
+import javax.swing.*;
+import java.awt.*;
 import java.text.DecimalFormat;
 
 public class Main {
@@ -50,14 +50,26 @@ public class Main {
          message = processCheck(transactionAmount, checkNumber);
       } else if (2 == transactionCode) {
          // Merge these dialog boxes somehow
-         double cashAmount = Double.parseDouble(JOptionPane.showInputDialog("Cash"));
-         double checkAmount = Double.parseDouble(JOptionPane.showInputDialog("Check"));
-         transactionAmount = cashAmount + checkAmount;
-         Deposit deposit = new Deposit(transactionCode, transactionAmount, account.getTransCount(), cashAmount,
-                 checkAmount);
-         account.setBalance(transactionAmount, transactionCode);
-         account.addTrans(deposit);
-         message = processDeposit(transactionAmount);
+         JPanel depositPanel = new JPanel(new GridLayout(2, 2));
+         JTextField cashField = new JTextField(10);
+         JTextField checkField = new JTextField(10);
+         depositPanel.add(new JLabel("Cash"));
+         depositPanel.add(cashField);
+         depositPanel.add(new JLabel("Checks"));
+         depositPanel.add(checkField);
+
+         int result = JOptionPane.showConfirmDialog(null, depositPanel, "Deposit Window",
+                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+         if (result == JOptionPane.OK_OPTION) {
+            double cashAmount = Double.parseDouble(cashField.getText());
+            double checkAmount = Double.parseDouble(checkField.getText());
+            transactionAmount = cashAmount + checkAmount;
+            Deposit deposit = new Deposit(transactionCode, transactionAmount, account.getTransCount(), cashAmount,
+                    checkAmount);
+            account.setBalance(transactionAmount, transactionCode);
+            account.addTrans(deposit);
+            message = processDeposit(transactionAmount);
+         } else { message = "Transaction cancelled"; }
       } else { message = "Invalid transaction code"; }
       JOptionPane.showMessageDialog(null, message);
       frame.setVisible(true);
@@ -122,7 +134,7 @@ public class Main {
       String msg = account.getName() + "'s Account\nTransaction: Check #" + checkNumber + " in Amount of "
               + formatAmount(transAmt) + "\nCurrent Balance: " + formatAmount(account.getBalance())
               + "\nService Charge: Check --- charge $0.15";
-      Transaction serviceCharge = new Transaction(account.getTransCount(), 3, 0.15);
+      Transaction serviceCharge = new Transaction(account.getTransCount(), 3, 0.15); // ID 3: service charges
       account.addTrans(serviceCharge);
 
       // Charges $5.00 the first time the balance drops below $500.00
