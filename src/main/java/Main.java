@@ -61,18 +61,22 @@ public class Main {
          int result = JOptionPane.showConfirmDialog(null, depositPanel, "Deposit Window",
                  JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
          if (result == JOptionPane.OK_OPTION) {
-            // Add exception handling for invalid input
              try {
-                 double cashAmount = Double.parseDouble(cashField.getText());
-                 double checkAmount = Double.parseDouble(checkField.getText());
+                 String cashText = cashField.getText().trim();
+                 String checkText = checkField.getText().trim();
+                 
+                 // Convert empty fields to 0.0
+                 double cashAmount = cashText.isEmpty() ? 0.0 : Double.parseDouble(cashText);
+                 double checkAmount = checkText.isEmpty() ? 0.0 : Double.parseDouble(checkText);
+                 
                  transactionAmount = cashAmount + checkAmount;
                  Deposit deposit = new Deposit(transactionCode, transactionAmount, account.getTransCount(), cashAmount,
                          checkAmount);
                  account.setBalance(transactionAmount, transactionCode);
                  account.addTrans(deposit);
                  message = processDeposit(transactionAmount);
-             } catch (NumberFormatException e) {
-                 message = "Invalid transaction code";
+             } catch (Exception e) {
+                 message = "Error: Please enter valid numerical values";
              }
          }
       }
