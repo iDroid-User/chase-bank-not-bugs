@@ -33,7 +33,7 @@ public class Main {
    public static void setTransactionInfo() {
        frame.setVisible(false); // Hides the JFrame
 
-      String message;
+      String message = "Transaction cancelled"; // Default message
       double transactionAmount;
       int transactionCode = Integer.parseInt(JOptionPane.showInputDialog("Enter your transaction code:"));
       if (0 == transactionCode) {
@@ -49,7 +49,7 @@ public class Main {
          account.addTrans(check);
          message = processCheck(transactionAmount, checkNumber);
       } else if (2 == transactionCode) {
-         // Merge these dialog boxes somehow
+         // The depositPanel has two input fields in the same dialog box
          JPanel depositPanel = new JPanel(new GridLayout(2, 2));
          JTextField cashField = new JTextField(10);
          JTextField checkField = new JTextField(10);
@@ -59,18 +59,23 @@ public class Main {
          depositPanel.add(checkField);
 
          int result = JOptionPane.showConfirmDialog(null, depositPanel, "Deposit Window",
-                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
          if (result == JOptionPane.OK_OPTION) {
-            double cashAmount = Double.parseDouble(cashField.getText());
-            double checkAmount = Double.parseDouble(checkField.getText());
-            transactionAmount = cashAmount + checkAmount;
-            Deposit deposit = new Deposit(transactionCode, transactionAmount, account.getTransCount(), cashAmount,
-                    checkAmount);
-            account.setBalance(transactionAmount, transactionCode);
-            account.addTrans(deposit);
-            message = processDeposit(transactionAmount);
-         } else { message = "Transaction cancelled"; }
-      } else { message = "Invalid transaction code"; }
+            // Add exception handling for invalid input
+             try {
+                 double cashAmount = Double.parseDouble(cashField.getText());
+                 double checkAmount = Double.parseDouble(checkField.getText());
+                 transactionAmount = cashAmount + checkAmount;
+                 Deposit deposit = new Deposit(transactionCode, transactionAmount, account.getTransCount(), cashAmount,
+                         checkAmount);
+                 account.setBalance(transactionAmount, transactionCode);
+                 account.addTrans(deposit);
+                 message = processDeposit(transactionAmount);
+             } catch (NumberFormatException e) {
+                 message = "Invalid transaction code";
+             }
+         }
+      }
       JOptionPane.showMessageDialog(null, message);
       frame.setVisible(true);
    }
