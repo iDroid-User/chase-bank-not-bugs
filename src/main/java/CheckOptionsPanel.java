@@ -2,12 +2,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class EOptionsPanel extends JPanel {
+public class CheckOptionsPanel extends JPanel {
    private JLabel prompt;
    private JRadioButton one, two, three, four;
+   public static CheckingAccount account; // This CheckingAccount object keeps track of the account information
 
    // Creates a panel with a label and a group of radio buttons that present options to the user
-   public EOptionsPanel() {
+   public CheckOptionsPanel() {
       prompt = new JLabel("Choose action:"); // Panel title
       prompt.setFont(new Font("Helvetica", Font.BOLD, 24));
 

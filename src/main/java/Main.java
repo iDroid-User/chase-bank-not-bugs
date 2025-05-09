@@ -5,8 +5,6 @@ import java.text.DecimalFormat;
 public class Main {
    // global variables
    private static boolean isBelow500 = false; // Tracks whether the balance has dropped below $500.00
-    // define a CheckingAccount object to keep track of the account information
-   private static CheckingAccount account;
    public static JFrame frame;
 
    public static void main(String[] args) {
@@ -19,11 +17,11 @@ public class Main {
       // get initial balance from the user
       initialBalance = Double.parseDouble(JOptionPane.showInputDialog("Enter your initial balance:"));
       // open an account with the initial balance
-      account = new CheckingAccount(accountHolder, initialBalance);
+      CheckOptionsPanel.account = new CheckingAccount(accountHolder, initialBalance);
 
       frame = new JFrame("Choose action:");
       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Ends the program rather than a transaction code of 0
-      EOptionsPanel panel = new EOptionsPanel();
+      CheckOptionsPanel panel = new CheckOptionsPanel();
       frame.getContentPane().add(panel);
       frame.pack();
       frame.setVisible(true);
@@ -37,16 +35,16 @@ public class Main {
       double transactionAmount;
       int transactionCode = Integer.parseInt(JOptionPane.showInputDialog("Enter your transaction code:"));
       if (0 == transactionCode) {
-         message = "Transaction: End\nCurrent Balance: " + formatAmount(account.getBalance())
+         message = "Transaction: End\nCurrent Balance: " + formatAmount(CheckOptionsPanel.account.getBalance())
                  + "\nTotal Service Charge: "
-                 + formatAmount(account.getServiceCharge()) + "\nFinal Balance: "
-                 + formatAmount(account.getBalance() - account.getServiceCharge());
+                 + formatAmount(CheckOptionsPanel.account.getServiceCharge()) + "\nFinal Balance: "
+                 + formatAmount(CheckOptionsPanel.account.getBalance() - CheckOptionsPanel.account.getServiceCharge());
       } else if (1 == transactionCode) {
          int checkNumber = Integer.parseInt(JOptionPane.showInputDialog("Enter your check number:"));
          transactionAmount = Double.parseDouble(JOptionPane.showInputDialog("Enter your check amount:"));
-         Check check = new Check(transactionCode, transactionAmount, account.getTransCount(), checkNumber);
-         account.setBalance(transactionAmount, transactionCode);
-         account.addTrans(check);
+         Check check = new Check(transactionCode, transactionAmount, CheckOptionsPanel.account.getTransCount(), checkNumber);
+         CheckOptionsPanel.account.setBalance(transactionAmount, transactionCode);
+         CheckOptionsPanel.account.addTrans(check);
          message = processCheck(transactionAmount, checkNumber);
       } else if (2 == transactionCode) {
          // The depositPanel has two input fields in the same dialog box
@@ -70,10 +68,10 @@ public class Main {
                  double checkAmount = checkText.isEmpty() ? 0.0 : Double.parseDouble(checkText);
                  
                  transactionAmount = cashAmount + checkAmount;
-                 Deposit deposit = new Deposit(transactionCode, transactionAmount, account.getTransCount(), cashAmount,
-                         checkAmount);
-                 account.setBalance(transactionAmount, transactionCode);
-                 account.addTrans(deposit);
+                 Deposit deposit = new Deposit(transactionCode, transactionAmount,
+                         CheckOptionsPanel.account.getTransCount(), cashAmount, checkAmount);
+                 CheckOptionsPanel.account.setBalance(transactionAmount, transactionCode);
+                 CheckOptionsPanel.account.addTrans(deposit);
                  message = processDeposit(transactionAmount);
              } catch (Exception e) {
                  message = "Error: Please enter valid numerical values";
@@ -88,19 +86,19 @@ public class Main {
       frame.setVisible(false);
 
       String message, transType;
-      message = "List All Transactions" + "\n\nID\t\tType\t\tAmount";
-      for (int index = 0; index < account.getTransCount(); index++) {
-         if (account.getTrans(index).getTransId() == 1) {
+      message = "List All Transactions" + "\nName: " + CheckOptionsPanel.account.getName() + "\n\nID\t\tType\t\tAmount";
+      for (int index = 0; index < CheckOptionsPanel.account.getTransCount(); index++) {
+         if (CheckOptionsPanel.account.getTrans(index).getTransId() == 1) {
             transType = "Check\t\t\t";
-         } else if (account.getTrans(index).getTransId() == 2) {
+         } else if (CheckOptionsPanel.account.getTrans(index).getTransId() == 2) {
             transType = "Deposit\t\t";
-         } else if (account.getTrans(index).getTransId() == 3) {
+         } else if (CheckOptionsPanel.account.getTrans(index).getTransId() == 3) { // ID 3: service charges
             transType = "Svc. Chg.\t";
          } else {
             transType = "";
          }
-         message += "\n" + account.getTrans(index).getTransNumber() + "\t\t" + transType +
-                 formatAmount(account.getTrans(index).getTransAmount());
+         message += "\n" + CheckOptionsPanel.account.getTrans(index).getTransNumber() + "\t\t" + transType +
+                 formatAmount(CheckOptionsPanel.account.getTrans(index).getTransAmount());
       }
       JOptionPane.showMessageDialog(null, message);
 
@@ -111,11 +109,12 @@ public class Main {
       frame.setVisible(false);
 
       String message;
-      message = "List All Checks" + "\n\nID\tAmount";
-      for (int index = 0; index < account.getTransCount(); index++) {
-         if (account.getTrans(index).getTransId() == 1) {
-            message += "\n" + account.getTrans(index).getTransNumber() + "\t" +
-                    formatAmount(account.getTrans(index).getTransAmount());
+      message = "List All Checks" + "\nName: " + CheckOptionsPanel.account.getName() + "\n\nID\tCheck\tAmount";
+      for (int index = 0; index < CheckOptionsPanel.account.getTransCount(); index++) {
+         if (CheckOptionsPanel.account.getTrans(index).getTransId() == 1) {
+            message += "\n" + CheckOptionsPanel.account.getTrans(index).getTransNumber() + "\t" +
+                    ((Check)CheckOptionsPanel.account.getTrans(index)).getCheckNumber() + "\t" +
+                    formatAmount(CheckOptionsPanel.account.getTrans(index).getTransAmount());
          }
       }
       JOptionPane.showMessageDialog(null, message);
@@ -127,11 +126,13 @@ public class Main {
       frame.setVisible(false);
 
       String message;
-      message = "List All Deposits" + "\n\nID\tAmount";
-      for (int index = 0; index < account.getTransCount(); index++) {
-         if (account.getTrans(index).getTransId() == 2) {
-            message += "\n" + account.getTrans(index).getTransNumber() + "\t" +
-                    formatAmount(account.getTrans(index).getTransAmount());
+      message = "List All Deposits\nName: " + CheckOptionsPanel.account.getName() + "\n\nID\tCash\t\tCheck\t\tAmount";
+      for (int index = 0; index < CheckOptionsPanel.account.getTransCount(); index++) {
+         if (CheckOptionsPanel.account.getTrans(index).getTransId() == 2) {
+            message += "\n" + CheckOptionsPanel.account.getTrans(index).getTransNumber() + "\t" +
+                    formatAmount(((Deposit)CheckOptionsPanel.account.getTrans(index)).getCashAmt()) + "\t\t" +
+                    formatAmount(((Deposit)CheckOptionsPanel.account.getTrans(index)).getCheckAmt()) + "\t\t" +
+                    formatAmount(((Deposit)CheckOptionsPanel.account.getTrans(index)).getTransAmount());
          }
       }
       JOptionPane.showMessageDialog(null, message);
@@ -140,42 +141,42 @@ public class Main {
    }
 
    public static String processCheck(double transAmt, int checkNumber) {
-      String msg = account.getName() + "'s Account\nTransaction: Check #" + checkNumber + " in Amount of "
-              + formatAmount(transAmt) + "\nCurrent Balance: " + formatAmount(account.getBalance())
+      String msg = CheckOptionsPanel.account.getName() + "'s Account\nTransaction: Check #" + checkNumber + " in Amount of "
+              + formatAmount(transAmt) + "\nCurrent Balance: " + formatAmount(CheckOptionsPanel.account.getBalance())
               + "\nService Charge: Check --- charge $0.15";
-      Transaction serviceCharge = new Transaction(account.getTransCount(), 3, 0.15); // ID 3: service charges
-      account.addTrans(serviceCharge);
+      Transaction serviceCharge = new Transaction(CheckOptionsPanel.account.getTransCount(), 3, 0.15);
+      CheckOptionsPanel.account.addTrans(serviceCharge);
 
       // Charges $5.00 the first time the balance drops below $500.00
-      if (account.getBalance() < 500 && !isBelow500) {
+      if (CheckOptionsPanel.account.getBalance() < 500 && !isBelow500) {
          isBelow500 = true;
          msg += "\nServiceCharge: Below $500 --- charge $5.00";
-         account.setServiceCharge(5.00);
-         serviceCharge = new Transaction(account.getTransCount(), 3, 5.00);
-         account.addTrans(serviceCharge);
+         CheckOptionsPanel.account.setServiceCharge(5.00);
+         serviceCharge = new Transaction(CheckOptionsPanel.account.getTransCount(), 3, 5.00);
+         CheckOptionsPanel.account.addTrans(serviceCharge);
       }
       // Issues a warning when the balance drops below $50.00
-      if (account.getBalance() < 50) {
+      if (CheckOptionsPanel.account.getBalance() < 50) {
          msg += "\nWarning: Balance below $50";
       }
       // Charges an overdraft fee of $10.00
-      if (account.getBalance() < 0) {
+      if (CheckOptionsPanel.account.getBalance() < 0) {
          msg += "\nServiceCharge: Below $0 --- charge $10.00";
-         account.setServiceCharge(10.00);
-         serviceCharge = new Transaction(account.getTransCount(), 3, 10.00);
-         account.addTrans(serviceCharge);
+         CheckOptionsPanel.account.setServiceCharge(10.00);
+         serviceCharge = new Transaction(CheckOptionsPanel.account.getTransCount(), 3, 10.00);
+         CheckOptionsPanel.account.addTrans(serviceCharge);
       }
-      msg += "\nTotal Service Charge: " + formatAmount(account.getServiceCharge());
+      msg += "\nTotal Service Charge: " + formatAmount(CheckOptionsPanel.account.getServiceCharge());
       return msg;
    }
 
    public static String processDeposit(double transAmt) {
-      String msg = account.getName() + "'s Account\nTransaction: Deposit in Amount of " + formatAmount(transAmt)
-            + "\nCurrent Balance: " + formatAmount(account.getBalance())
+      String msg = CheckOptionsPanel.account.getName() + "'s Account\nTransaction: Deposit in Amount of " + formatAmount(transAmt)
+            + "\nCurrent Balance: " + formatAmount(CheckOptionsPanel.account.getBalance())
             + "\nService Charge: Deposit --- charge $0.10\nTotal Service Charge: "
-            + formatAmount(account.getServiceCharge());
-      Transaction serviceCharge = new Transaction(account.getTransCount(), 3, 0.10);
-      account.addTrans(serviceCharge);
+            + formatAmount(CheckOptionsPanel.account.getServiceCharge());
+      Transaction serviceCharge = new Transaction(CheckOptionsPanel.account.getTransCount(), 3, 0.10);
+      CheckOptionsPanel.account.addTrans(serviceCharge);
       return msg;
    }
 
